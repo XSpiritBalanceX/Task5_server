@@ -28,14 +28,16 @@ class FakeData {
 
         this.generateFakeUsers(()=>{
             let oneUser={
-                id:this.faker.datatype.uuid(),
+                id: this.faker.datatype.uuid() ,
                 name:this.faker.name.fullName(),
                 address: `${this.faker.address.city()} ${this.faker.address.street()} ${this.faker.address.buildingNumber()}`,
                 phoneNumber: this.faker.phone.number()
             };
+            
             if(this.err>1){
                 for(let i=0;i<this.err; i++){
                     oneUser=this.randomConverter(oneUser)
+                    
                 }
             }
             users.push(oneUser);
@@ -43,7 +45,7 @@ class FakeData {
         if(this.err>0&&this.err<1  ){
             users=this.probabilisticErr(users);
         }
-
+        
         return {users};
     };
 
@@ -98,13 +100,12 @@ class FakeData {
         return user;
     };
 
-    randomWord(len){
-        
+    randomWord(len){        
         let word='';
         for(let i=0;i<len;i++){
             word+=this.getLocalCharRand();
         }
-        console.log(word)
+        
         return word;
     };
 
@@ -116,19 +117,23 @@ class FakeData {
 
     replaceLetters(str){
         if(str.length<=1) return this.randomWord(5);
-
+         
         let first=this.chance.natural({min:0, max:str.length-1});
         let second=this.chance.natural({min:0, max:str.length-1});
-         let newStr=str.split('').map((el, ind)=>{
-            ind===first? str[second]:ind===second?str[first]:el;
-        }).join('') 
+        let newStr=str.split('').map((el, ind)=>{
+            if(ind==first){
+               return str[second]
+            }else if(ind===second){
+               return str[first]
+            }else{
+              return  el
+            }
+        }).join('')
         return newStr;        
     };
 
-    deleteLetters(str){
-        
+    deleteLetters(str){ 
         if(str.length===0) return this.randomWord(10);
-
         let id=0;
         if(str.length>1){
             id=this.chance.natural({min:0, max:str.length-1});
@@ -138,6 +143,7 @@ class FakeData {
     };
 
     addLetters(str){
+        
         let char=this.getLocalCharRand();
         let id=0;
         if(str.length>1){
